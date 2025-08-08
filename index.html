@@ -1,0 +1,34 @@
+<body bgcolor='#303030' style='text-align:center; font-size: 40px; color: #F7F8F8; line-height: 150%'>
+<br>
+&nbsp;<button onclick="downloadFile('FWmvQqXqYxLv.jpg')"><img src='picen.png'></button>
+&nbsp;&nbsp;&nbsp;
+<button onclick="downloadFile('FWmvQqXqYxLv.mp4')"><img src='viden.png'></button>
+<br>
+Phúc Nam & Phương Thảo.
+<br><br>
+<img id="mainImage" style='max-width:100%;'>
+<br><br>
+Ảnh và Video được lưu vĩnh viễn!
+<br><br>
+
+<script>
+async function loadImage() {
+    const res = await fetch('/media/FWmvQqXqYxLv.jpg');
+    const dataUrl = await res.text();
+    document.getElementById('mainImage').src = dataUrl;
+}
+
+async function downloadFile(filename) {
+    const res = await fetch('/media/' + filename);
+    const dataUrl = await res.text();
+    const a = document.createElement('a');
+    a.href = dataUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+}
+
+loadImage();
+</script>
+</body>
