@@ -1,18 +1,24 @@
 const express = require('express');
-const fs = require('fs');
-const path = require('path');
+const fetch = require('node-fetch');
 const app = express();
 
 app.use(express.static(__dirname));
 
-app.get('/media/:filename', (req, res) => {
-    const filePath = path.join(__dirname, 'private', req.params.filename);
-    if (fs.existsSync(filePath)) {
-        const data = fs.readFileSync(filePath);
-        const base64 = data.toString('base64');
+const FILES = {
+    'FWmvQqXqYxLv.jpg': 'https://pnam.minamifukun.io.vn/FWmvQqXqYxLv.jpg',
+    'FWmvQqXqYxLv.mp4': 'https://pnam.minamifukun.io.vn/FWmvQqXqYxLv.mp4'
+};
+
+app.get('/media/:filename', async (req, res) => {
+    const url = FILES[req.params.filename];
+    if (!url) return res.status(404).send('Not found');
+    try {
+        const r = await fetch(url);
+        const buffer = await r.buffer();
+        const base64 = buffer.toString('base64');
         res.send(`data:application/octet-stream;base64,${base64}`);
-    } else {
-        res.status(404).send('Not found');
+    } catch (err) {
+        res.status(500).send('Error fetching file');
     }
 });
 
